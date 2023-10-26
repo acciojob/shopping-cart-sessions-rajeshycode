@@ -40,7 +40,7 @@
       cart.forEach((cartItem) => {
         const product = products.find((p) => p.id === cartItem.productId);
         const li = document.createElement("li");
-        li.innerHTML = `${product.name} - $${product.price} <button class="remove-from-cart-btn" data-id="${product.id}">Remove from Cart</button>`;
+        li.innerHTML = `${product.name} - $${product.price} (Qty: ${cartItem.quantity}) <button class="remove-from-cart-btn" data-id="${product.id}">Remove from Cart</button>`;
         cartList.appendChild(li);
       });
     }
@@ -49,15 +49,10 @@
     function addToCart(productId) {
       const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-      if (cart.find((item) => item.productId === productId)) {
-        // If the item is already in the cart, increase its quantity
-        cart.forEach((item) => {
-          if (item.productId === productId) {
-            item.quantity++;
-          }
-        });
+      const cartItem = cart.find((item) => item.productId === productId);
+      if (cartItem) {
+        cartItem.quantity++;
       } else {
-        // If the item is not in the cart, add it with a quantity of 1
         cart.push({ productId, quantity: 1 });
       }
 
@@ -80,12 +75,6 @@
         sessionStorage.setItem('cart', JSON.stringify(cart));
         renderCart();
       }
-    }
-
-    // Function to clear the cart
-    function clearCart() {
-      sessionStorage.removeItem('cart');
-      renderCart();
     }
 
     // Event listener for adding items to the cart
